@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { WebClient } from '@slack/web-api';
 import './App.css';
-import { Button, FormGroup, InputGroup, ControlGroup } from "@blueprintjs/core";
+import { Button, FormGroup, InputGroup, ControlGroup, Card, Elevation } from "@blueprintjs/core";
 import { ChannelSelect } from '../ChannelSelect/ChannelSelect';
 import { ISlackChannel } from '../ChannelSelect/ChannelSelect.d';
 import { relative } from 'path';
@@ -17,7 +17,11 @@ function getChannnels(
     try {
       const result = await slackClient.channels.list();
       if (result.ok) {
-        const channels = result.channels as ISlackChannel[];
+        const channels = (result.channels as ISlackChannel[]).filter((channel) => {
+          return !!channel.is_channel
+            && channel.members.length > 0
+            && !channel.is_archived;
+        });
         setChannels(channels);
       }
     } catch (error) {
@@ -46,6 +50,10 @@ export function App() {
   const localStorageSlackToken = getSlackToken();
   const [slackToken, setSlackToken] = useState(localStorageSlackToken || '');
   const [channels, setChannels] = useState<undefined | ISlackChannel[]>(undefined);
+  const [selectedChannels, selectChannels] = useState<ISlackChannel[]>([]);
+  const onItemSelect = (channel: ISlackChannel) => {
+    selectChannels([channel]);
+  }
   return (
     <div className="App" style={{ position: 'relative', maxHeight: 500 }}>
       <header className="App-header">
@@ -69,8 +77,15 @@ export function App() {
         </FormGroup>
         <SlackClient slackToken={slackToken} setChannels={setChannels} />
         {!!channels ? (
-          <ChannelSelect channels={channels} onItemSelect={() => ''} />
+          <ChannelSelect selectedChannels={selectedChannels} channels={channels} onItemSelect={onItemSelect} />
         ) : <></>}
+        {selectedChannels.length > 0 ? (
+          <Card interactive={true} elevation={Elevation.TWO}>
+            <p>
+              {selectedChannels.toString()}
+            </p>
+          </Card>
+        ) : (<></>)}
       </header>
     </div>
   );
