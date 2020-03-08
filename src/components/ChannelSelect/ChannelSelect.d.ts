@@ -25,4 +25,5 @@ export interface ISlackChannel {
     last_set: number;
   };
   previous_names: string[];
+  num_members: number;
 }

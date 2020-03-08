@@ -52,7 +52,7 @@ async function fetchChannelsSomehow() {
 // STORE
 /////////////////////
 export class SlackChannelsStore {
-  // key observables
+  // OBSERVABLES
   @observable
   public status: TSlackChannelsStatus = 'pending';
 
@@ -61,6 +61,24 @@ export class SlackChannelsStore {
 
   @observable
   public selectedChannels: ISlackChannel[] = [];
+
+  // ACTIONS
+  @action
+  addSelectedChannel(channel: ISlackChannel) {
+    const isDupe = this.isSelectedChannel(channel);
+    if (!isDupe) {
+      this.selectedChannels.push(channel);
+    }
+  }
+
+  // ACTIONS
+  @action
+  removeSelectedChannel(id: string) {
+    const indexToRemove = this.selectedChannels.findIndex(c => c.id === id);
+    if (indexToRemove > -1) {
+      this.selectedChannels.splice(indexToRemove, 1);
+    }
+  }
 
   @action
   async fetchChannels() {
@@ -72,7 +90,7 @@ export class SlackChannelsStore {
       runInAction(() => {
         this.status = "done";
         console.log(channels);
-        this.channels = channels;
+        this.channels = this.sortChannels(channels);
       });
     } catch (error) {
       console.error(error);
@@ -80,5 +98,19 @@ export class SlackChannelsStore {
         this.status = "error"
       });
     }
+  }
+
+  // CLASS HELPERS
+  isSelectedChannel(channel: ISlackChannel) {
+    const dupe = this.selectedChannels.find((selectedChannel) => {
+      return selectedChannel.id === channel.id;
+    });
+    return !!dupe;
+  }
+
+  sortChannels(channels: ISlackChannel[]) {
+    return channels.sort((a, b) => {
+      return (b.num_members | 0) - (a.num_members | 0);
+    });
   }
 }

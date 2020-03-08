@@ -4,7 +4,7 @@ import { MenuItem } from "@blueprintjs/core";
 import { MultiSelect, ItemRenderer } from "@blueprintjs/select";
 // component
 import { ISlackChannel } from './ChannelSelect.d';
-import './ChannelSelect';
+import './ChannelSelect.css';
 import { highlightText, filterFilm } from './ChannelSelectHelpers';
 
 // Select<T> is a generic component to work with your data types.
@@ -20,7 +20,7 @@ const renderChannel: ItemRenderer<ISlackChannel> = (channel, { handleClick, modi
     <MenuItem
       active={modifiers.active}
       disabled={modifiers.disabled}
-      label={`${channel.members.length}`}
+      label={`${channel.num_members}`}
       key={channel.id}
       onClick={handleClick}
       text={highlightText(text, query)}
