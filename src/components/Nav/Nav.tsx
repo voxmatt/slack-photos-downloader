@@ -28,7 +28,11 @@ export const Nav = observer(() => {
         <NavbarHeading>Slack Photo Exporter</NavbarHeading>
       </NavbarGroup>
       <NavbarGroup align="right">
-        <Button icon="settings" text="Setup" onClick={() => setupDialogStore.open()} />
+        <Button
+          icon="settings"
+          text="Setup"
+          onClick={() => setupDialogStore.openDialog()}
+        />
       </NavbarGroup>
     </Navbar>
   );

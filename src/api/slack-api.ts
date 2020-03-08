@@ -4,7 +4,7 @@
 // libraries
 import { WebClient, FilesListArguments } from '@slack/web-api';
 // locals
-import { LocalStore } from '../stores/local-store';
+import { SetupDialogStore } from '../stores/setup-dialog-store';
 
 //////////////////////
 // TYPES
@@ -95,7 +95,7 @@ function filterChannels(channels: ISlackChannel[]) {
 // instantiate the slackClient as a singleton
 let SlackClient: WebClient;
 const getSlackClient = () => {
-  const slackToken = (new LocalStore()).getSlackToken();
+  const slackToken = (new SetupDialogStore()).slackToken;
   if (!slackToken) {
     throw new Error('No slack token');
   }

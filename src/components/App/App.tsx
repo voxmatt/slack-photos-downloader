@@ -2,13 +2,10 @@
 // IMPORTS
 /////////////////////
 // libraries
-import React, { useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react'
 import {
   Button,
-  FormGroup,
-  InputGroup,
-  ControlGroup,
   ProgressBar,
 } from "@blueprintjs/core";
 // this component
@@ -35,30 +32,10 @@ const SlackPhotos = ({ photos }: { photos: ISlackFile[] }) => {
 }
 
 export const App = observer(() => {
-  const { localStore, slackChannelsStore, slackPhotosStore } = useStores();
-  const localStorageSlackToken = localStore.getSlackToken();
-  const [slackToken, setSlackToken] = useState(localStorageSlackToken || '');
+  const { slackChannelsStore, slackPhotosStore, setupDialogStore } = useStores();
   return (
     <div className="App" style={{ position: 'relative' }}>
       <Nav />
-      <FormGroup
-        helperText="Ask someone on your developer team how to find this "
-        label="Slack Token"
-        labelFor="slack-token-input"
-        labelInfo="(required)"
-      >
-        <ControlGroup fill={true} vertical={false}>
-          <InputGroup
-            id="slack-token-input"
-            placeholder="Slack Token"
-            value={slackToken}
-            onChange={(e: any) => setSlackToken(e.target.value)}
-          />
-          <Button onClick={() => localStore.saveSlackToken(slackToken)}>
-            Save
-            </Button>
-        </ControlGroup>
-      </FormGroup>
       <Button
         onClick={() => slackChannelsStore.fetchChannels()}
         intent="success"

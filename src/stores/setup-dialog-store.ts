@@ -10,23 +10,30 @@ configure({ enforceActions: "always" });
 // STORE
 /////////////////////
 export class SetupDialogStore {
+  // SETUP
+  private slackTokenKey = 'slackToken';
+
   // OBSERVABLES
   @observable
   public isOpen = false;
 
+  @observable
+  public slackToken = window.localStorage.getItem(this.slackTokenKey) || undefined;
+
   // ACTIONS
   @action
-  open = () => {
+  openDialog = () => {
     this.isOpen = true;
   }
 
   @action
-  close = () => {
+  closeDialog = () => {
     this.isOpen = false;
   }
 
   @action
-  toggle = () => {
-    this.isOpen = !this.isOpen;
+  setSlackToken = (token: string) => {
+    this.slackToken = token;
+    window.localStorage.setItem(this.slackTokenKey, this.slackToken);
   }
 }
