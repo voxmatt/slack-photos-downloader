@@ -2,7 +2,7 @@
 // IMPORTS
 /////////////////////
 // libraries
-import { WebClient } from '@slack/web-api';
+import { WebClient, FilesListArguments } from '@slack/web-api';
 // locals
 import { LocalStore } from '../stores/local-store';
 
@@ -105,6 +105,18 @@ const getSlackClient = () => {
   return SlackClient;
 }
 
+async function baseFetchFiles(options?: FilesListArguments) {
+  const result = await getSlackClient().files.list(options);
+  if (!result.ok) {
+    throw new Error('Slack request errored');
+  }
+
+  if (!result.files) {
+    throw new Error('Slack files not returned');
+  }
+  return result.files as ISlackFile[];
+}
+
 //////////////////////
 // API
 /////////////////////
@@ -120,27 +132,29 @@ export async function fetchSlackChannels() {
   return filterChannels(result.channels as ISlackChannel[]);
 }
 
-export async function fetchSlackFiles(channels: string[]) {
+export async function fetchSlackFiles(channels?: string[]) {
   const now = Date.now();
   const millisInAWeek = 604800000;
   let files: ISlackFile[] = [];
 
+  let options: FilesListArguments = {
+    types: 'images',
+    ts_from: `${(now - millisInAWeek) / 1000}`,
+    ts_to: `${now / 1000}`,
+  };
+
+  // if not passing channel ids, just fetch all of them
+  if (!channels || channels.length === 0) {
+    files = await baseFetchFiles(options);
+    return files;
+  }
+
+  // endpoint doesn't allow for multiple channels, so have to iterate
   for (let index = 0; index < channels.length; index++) {
     const channelToFetch = channels[index];
-    const result = await getSlackClient().files.list({
-      types: 'images',
-      channel: channelToFetch,
-      ts_from: `${(now - millisInAWeek) / 1000}`,
-      ts_to: `${now / 1000}`,
-    });
-    if (!result.ok) {
-      throw new Error('Slack request errored');
-    }
-
-    if (!result.files) {
-      throw new Error('Slack files not returned');
-    }
-    files = [...files, ...(result.files as ISlackFile[])];
+    options.channel = channelToFetch;
+    const fetchedFiles = await baseFetchFiles(options);
+    files = [...files, ...fetchedFiles];
   }
 
   return files;
