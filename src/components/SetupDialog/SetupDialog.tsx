@@ -8,7 +8,9 @@ import {
   Dialog,
   Classes,
   FormGroup,
-  InputGroup,
+  TextArea,
+  Intent,
+  Button,
 } from "@blueprintjs/core";
 // this component
 
@@ -20,6 +22,7 @@ import { useStores } from '../../stores/'
 /////////////////////
 export const SetupDialog = observer(() => {
   const { setupDialogStore } = useStores();
+
   return (
     <Dialog
       icon="settings"
@@ -34,13 +37,26 @@ export const SetupDialog = observer(() => {
           labelFor="slack-token-input"
           labelInfo="(required)"
         >
-          <InputGroup
+          <TextArea
+            fill
             id="slack-token-input"
             placeholder="Slack Token"
+            growVertically={true}
+            intent={setupDialogStore.slackTokenIsValid
+              ? Intent.PRIMARY
+              : Intent.DANGER
+            }
             value={setupDialogStore.slackToken}
             onChange={(e: any) => setupDialogStore.setSlackToken(e.target.value)}
           />
         </FormGroup>
+        <div className={Classes.DIALOG_FOOTER}>
+          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+            <Button onClick={() => setupDialogStore.closeDialog()}>
+              Done
+            </Button>
+          </div>
+        </div>
       </div>
     </Dialog>
   );

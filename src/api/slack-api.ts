@@ -93,16 +93,12 @@ function filterChannels(channels: ISlackChannel[]) {
 }
 
 // instantiate the slackClient as a singleton
-let SlackClient: WebClient;
 const getSlackClient = () => {
   const slackToken = (new SetupDialogStore()).slackToken;
   if (!slackToken) {
     throw new Error('No slack token');
   }
-  if (!SlackClient) {
-    SlackClient = new WebClient(slackToken);
-  }
-  return SlackClient;
+  return new WebClient(slackToken);
 }
 
 async function baseFetchFiles(options?: FilesListArguments) {
@@ -120,6 +116,11 @@ async function baseFetchFiles(options?: FilesListArguments) {
 //////////////////////
 // API
 /////////////////////
+export async function validateSlackToken() {
+  const result = await getSlackClient().auth.test();
+  return result.ok;
+}
+
 export async function fetchSlackChannels() {
   const result = await getSlackClient().channels.list();
   if (!result.ok) {

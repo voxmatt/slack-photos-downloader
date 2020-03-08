@@ -32,7 +32,7 @@ const SlackPhotos = ({ photos }: { photos: ISlackFile[] }) => {
 }
 
 export const App = observer(() => {
-  const { slackChannelsStore, slackPhotosStore, setupDialogStore } = useStores();
+  const { slackChannelsStore, slackPhotosStore } = useStores();
   return (
     <div className="App" style={{ position: 'relative' }}>
       <Nav />
