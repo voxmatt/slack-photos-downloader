@@ -14,6 +14,7 @@ import {
 } from "@blueprintjs/core";
 // other components
 import { ChannelSelect } from '../ChannelSelect/ChannelSelect';
+import { DateRangeSelect } from '../DateRangeSelect/DateRangeSelect';
 // other stuff
 import { useStores } from '../../stores/'
 import { ISlackFile } from '../../api/slack-api';
@@ -43,6 +44,7 @@ export const SlackPhotosForm = observer(() => {
       <H5>
         Slack Options
       </H5>
+      <DateRangeSelect />
       <div className={slackChannelsStore.status === 'done' ? '' : Classes.SKELETON}>
         <ChannelSelect />
       </div>
