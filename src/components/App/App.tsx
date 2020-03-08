@@ -4,7 +4,9 @@ import './App.css';
 import { Button, FormGroup, InputGroup, ControlGroup, Card, Elevation } from "@blueprintjs/core";
 import { ChannelSelect } from '../ChannelSelect/ChannelSelect';
 import { ISlackChannel } from '../ChannelSelect/ChannelSelect.d';
-import { relative } from 'path';
+
+import { observer } from 'mobx-react'
+import { useStores } from '../../stores/'
 
 type SetChannels = (channels: ISlackChannel[]) => void;
 
@@ -46,7 +48,20 @@ function getSlackToken() {
   return window.localStorage.getItem('slackToken');
 }
 
-export function App() {
+// src/components/Counter.tsx
+export const Counter = observer(() => {
+  const { slackChannelsStore } = useStores()
+
+  return (
+    <>
+      <div>{slackChannelsStore.count}</div>
+      <button onClick={() => slackChannelsStore.increment()}>++</button>
+      <button onClick={() => slackChannelsStore.decrement()}>--</button>
+    </>
+  )
+})
+
+export const App = observer(() => {
   const localStorageSlackToken = getSlackToken();
   const [slackToken, setSlackToken] = useState(localStorageSlackToken || '');
   const [channels, setChannels] = useState<undefined | ISlackChannel[]>(undefined);
@@ -63,6 +78,7 @@ export function App() {
           labelFor="slack-token-input"
           labelInfo="(required)"
         >
+          <Counter />
           <ControlGroup fill={true} vertical={false}>
             <InputGroup
               id="slack-token-input"
@@ -89,4 +105,4 @@ export function App() {
       </header>
     </div>
   );
-}
+});

@@ -42,6 +42,7 @@ export function ChannelSelect({ channels, onItemSelect, selectedChannels }: {
       itemPredicate={filterFilm}
       popoverProps={{
         popoverClassName: 'channel-suggest-popover',
+        minimal: true,
       }}
     />
   );
