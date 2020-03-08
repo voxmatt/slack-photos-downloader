@@ -9,8 +9,6 @@ import {
   FormGroup,
   InputGroup,
   ControlGroup,
-  Card,
-  Elevation,
 } from "@blueprintjs/core";
 // this component
 import './App.css';

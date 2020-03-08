@@ -8,15 +8,19 @@ import { Button, MenuItem } from "@blueprintjs/core";
 import { MultiSelect, ItemRenderer } from "@blueprintjs/select";
 // component
 import './ChannelSelect.css';
-import { ISlackChannel } from './ChannelSelect.d';
 import { highlightText, filterChannel } from './ChannelSelectHelpers';
 // state
 import { useStores } from '../../stores/'
+// api
+import { ISlackChannel } from '../../api/slack-api';
 
+//////////////////////
+// COMPONENT
+/////////////////////
 // Select<T> is a generic component to work with your data types.
 // In TypeScript, you must first obtain a non-generic reference:
 const ChannelSuggest = MultiSelect.ofType<ISlackChannel>();
-
+// actual component
 export const ChannelSelect = observer(() => {
   const { slackChannelsStore } = useStores();
   const {
