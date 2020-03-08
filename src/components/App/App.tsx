@@ -9,6 +9,7 @@ import {
   FormGroup,
   InputGroup,
   ControlGroup,
+  ProgressBar,
 } from "@blueprintjs/core";
 // this component
 import './App.css';
@@ -17,7 +18,6 @@ import { ChannelSelect } from '../ChannelSelect/ChannelSelect';
 // other stuff
 import { useStores } from '../../stores/'
 import { ISlackFile } from '../../api/slack-api';
-import { SlackChannelsStore } from '../../stores/slack-channels-store';
 
 //////////////////////
 // COMPONENT
@@ -72,6 +72,8 @@ export const App = observer(() => {
         />
         {slackPhotosStore.status === 'done' ? (
           <SlackPhotos photos={slackPhotosStore.photos} />
+        ) : slackPhotosStore.status === 'pending' ? (
+          <ProgressBar />
         ) : (<></>)}
       </header>
     </div>

@@ -10,7 +10,7 @@ configure({ enforceActions: "always" });
 //////////////////////
 // TYPES
 /////////////////////
-type TSlackChannelsStatus = 'pending' | 'done' | 'error';
+type TSlackChannelsStatus = 'idle' | 'pending' | 'done' | 'error';
 
 //////////////////////∏
 // STORE
@@ -18,7 +18,7 @@ type TSlackChannelsStatus = 'pending' | 'done' | 'error';
 export class SlackPhotosStore {
   // OBSERVABLES
   @observable
-  public status: TSlackChannelsStatus = 'pending';
+  public status: TSlackChannelsStatus = 'idle';
 
   @observable
   public photos: ISlackFile[] = [];
