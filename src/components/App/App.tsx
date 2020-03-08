@@ -16,6 +16,7 @@ import './App.css';
 import { ChannelSelect } from '../ChannelSelect/ChannelSelect';
 // other stuff
 import { useStores } from '../../stores/'
+import { fetchSlackFiles } from '../../api/slack-api';
 
 //////////////////////
 // COMPONENT
@@ -53,6 +54,11 @@ export const App = observer(() => {
         {slackChannelsStore.status === 'done' ? (
           <ChannelSelect />
         ) : <></>}
+        <Button
+          onClick={() => fetchSlackFiles()}
+          intent="success"
+          text="Fetch Files"
+        />
       </header>
     </div>
   );

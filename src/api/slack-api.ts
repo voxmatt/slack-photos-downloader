@@ -50,21 +50,24 @@ function filterChannels(channels: ISlackChannel[]) {
   });
 }
 
-//////////////////////
-// API
-/////////////////////
-export async function fetchSlackChannels() {
+// instantiate the slackClient as a singleton
+let SlackClient: WebClient;
+const getSlackClient = () => {
   const slackToken = (new LocalStore()).getSlackToken();
   if (!slackToken) {
     throw new Error('No slack token');
   }
-
-  const slackClient = new WebClient(slackToken);
-  if (!slackClient) {
-    throw new Error('No Slack client');
+  if (!SlackClient) {
+    SlackClient = new WebClient(slackToken);
   }
+  return SlackClient;
+}
 
-  const result = await slackClient.channels.list();
+//////////////////////
+// API
+/////////////////////
+export async function fetchSlackChannels() {
+  const result = await getSlackClient().channels.list();
   if (!result.ok) {
     throw new Error('Slack request errored');
   }
@@ -73,4 +76,17 @@ export async function fetchSlackChannels() {
     throw new Error('Channels were not returned');
   }
   return filterChannels(result.channels as ISlackChannel[]);
+}
+
+export async function fetchSlackFiles() {
+  // const now = Date.now();
+  // const millisInAWeek = 604800000;
+  const result = await getSlackClient().files.list({
+    types: 'images',
+  });
+  if (!result.ok) {
+    throw new Error('Slack request errored');
+  }
+
+  console.log(result);
 }

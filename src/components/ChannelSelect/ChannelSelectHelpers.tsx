@@ -1,6 +1,6 @@
 import React from 'react';
 import { ItemPredicate } from "@blueprintjs/select";
-import { ISlackChannel } from './ChannelSelect.d';
+import { ISlackChannel } from '../../api/slack-api';
 
 function escapeRegExpChars(text: string) {
   return text.replace(/([.*+?^=!:${}()|[\]/\\])/g, "\\$1");
