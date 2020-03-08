@@ -1,7 +1,6 @@
 import React from 'react';
 import { ItemPredicate } from "@blueprintjs/select";
 import { ISlackChannel } from './ChannelSelect.d';
-import './ChannelSelect';
 
 function escapeRegExpChars(text: string) {
   return text.replace(/([.*+?^=!:${}()|[\]/\\])/g, "\\$1");
@@ -29,7 +28,7 @@ export function highlightText(text: string, query: string) {
       tokens.push(before);
     }
     lastIndex = regexp.lastIndex;
-    tokens.push(<strong key={lastIndex} > {match[0]} </strong>);
+    tokens.push(<strong key={lastIndex}>{match[0]}</strong>);
   }
   const rest = text.slice(lastIndex);
   if (rest.length > 0) {
@@ -38,7 +37,7 @@ export function highlightText(text: string, query: string) {
   return tokens;
 }
 
-export const filterFilm: ItemPredicate<ISlackChannel> = (query, slackChannel, _index, exactMatch) => {
+export const filterChannel: ItemPredicate<ISlackChannel> = (query, slackChannel, _index, exactMatch) => {
   const normalizedTitle = slackChannel.name.toLowerCase();
   const normalizedQuery = query.toLowerCase();
 

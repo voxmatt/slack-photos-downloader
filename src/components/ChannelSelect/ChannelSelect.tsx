@@ -4,12 +4,12 @@
 // libraries
 import React from 'react';
 import { observer } from 'mobx-react'
-import { MenuItem } from "@blueprintjs/core";
+import { Button, MenuItem } from "@blueprintjs/core";
 import { MultiSelect, ItemRenderer } from "@blueprintjs/select";
 // component
 import './ChannelSelect.css';
 import { ISlackChannel } from './ChannelSelect.d';
-import { highlightText, filterFilm } from './ChannelSelectHelpers';
+import { highlightText, filterChannel } from './ChannelSelectHelpers';
 // state
 import { useStores } from '../../stores/'
 
@@ -17,33 +17,57 @@ import { useStores } from '../../stores/'
 // In TypeScript, you must first obtain a non-generic reference:
 const ChannelSuggest = MultiSelect.ofType<ISlackChannel>();
 
-const renderChannel: ItemRenderer<ISlackChannel> = (channel, { handleClick, modifiers, query }) => {
-  if (!modifiers.matchesPredicate) {
-    return null;
-  }
-  const text = `${channel.name}`;
-  return (
-    <MenuItem
-      active={modifiers.active}
-      disabled={modifiers.disabled}
-      label={`${channel.num_members}`}
-      key={channel.id}
-      onClick={handleClick}
-      text={highlightText(text, query)}
-    />
-  );
-};
-
 export const ChannelSelect = observer(() => {
   const { slackChannelsStore } = useStores();
-  const { channels, addSelectedChannel } = slackChannelsStore;
+  const {
+    channels,
+    clearSelectedChannels,
+    selectedChannels,
+    removeSelectedChannelByIndex,
+    addOrRemoveSelectedChannel,
+  } = slackChannelsStore;
+
+  // clear button on the right side of the input
+  const clearButton = (selectedChannels.length > 0)
+    ? <Button icon="cross" minimal={true} onClick={clearSelectedChannels} />
+    : undefined;
+
+  // function to render the menu item for each channel
+  const renderChannel: ItemRenderer<ISlackChannel> = (channel, { handleClick, modifiers, query }) => {
+    if (!modifiers.matchesPredicate) {
+      return null;
+    }
+    const text = `${channel.name}`;
+    return (
+      <MenuItem
+        active={modifiers.active}
+        disabled={modifiers.disabled}
+        label={`${channel.num_members}`}
+        icon={slackChannelsStore.isSelectedChannel(channel) ? "tick" : "blank"}
+        key={channel.id}
+        onClick={handleClick}
+        text={highlightText(text, query)}
+      />
+    );
+  };
+
+  // render!
   return (
     <ChannelSuggest
       items={channels}
-      onItemSelect={addSelectedChannel}
+      onItemSelect={addOrRemoveSelectedChannel}
       itemRenderer={renderChannel}
       tagRenderer={(item) => item.name}
-      itemPredicate={filterFilm}
+      itemPredicate={filterChannel}
+      selectedItems={selectedChannels}
+      resetOnSelect={true}
+      fill={true}
+      tagInputProps={{
+        onRemove: (_val, index) => {
+          removeSelectedChannelByIndex(index);
+        },
+        rightElement: clearButton
+      }}
       popoverProps={{
         popoverClassName: 'channel-suggest-popover',
         minimal: true,

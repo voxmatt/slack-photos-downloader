@@ -19,7 +19,9 @@ import { ChannelSelect } from '../ChannelSelect/ChannelSelect';
 // other stuff
 import { useStores } from '../../stores/'
 
-
+//////////////////////
+// COMPONENT
+/////////////////////
 export const App = observer(() => {
   const { localStore, slackChannelsStore } = useStores();
   const localStorageSlackToken = localStore.getSlackToken();
@@ -53,13 +55,6 @@ export const App = observer(() => {
         {slackChannelsStore.status === 'done' ? (
           <ChannelSelect />
         ) : <></>}
-        {slackChannelsStore.selectedChannels.length > 0 ? (
-          <Card interactive={true} elevation={Elevation.TWO}>
-            <p>
-              {slackChannelsStore.selectedChannels.toString()}
-            </p>
-          </Card>
-        ) : (<></>)}
       </header>
     </div>
   );

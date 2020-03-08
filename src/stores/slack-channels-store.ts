@@ -68,7 +68,6 @@ export class SlackChannelsStore {
     const isDupe = this.isSelectedChannel(channel);
     if (!isDupe) {
       this.selectedChannels.push(channel);
-      this.selectedChannels = this.sortChannels([...this.selectedChannels]);
     }
   }
 
@@ -76,9 +75,29 @@ export class SlackChannelsStore {
   @action
   removeSelectedChannel = (id: string) => {
     const indexToRemove = this.selectedChannels.findIndex(c => c.id === id);
-    if (indexToRemove > -1) {
-      this.selectedChannels.splice(indexToRemove, 1);
+    this.removeSelectedChannelByIndex(indexToRemove);
+  }
+
+  @action
+  removeSelectedChannelByIndex = (index: number) => {
+    if (index > -1) {
+      this.selectedChannels.splice(index, 1);
     }
+  }
+
+  @action
+  addOrRemoveSelectedChannel = (channel: ISlackChannel) => {
+    const isSelected = this.isSelectedChannel(channel);
+    if (isSelected) {
+      this.removeSelectedChannel(channel.id);
+    } else {
+      this.addSelectedChannel(channel);
+    }
+  }
+
+  @action
+  clearSelectedChannels = () => {
+    this.selectedChannels = [];
   }
 
   @action
