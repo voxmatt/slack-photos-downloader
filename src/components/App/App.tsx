@@ -16,7 +16,6 @@ import {
 import './App.css';
 // other components
 import { ChannelSelect } from '../ChannelSelect/ChannelSelect';
-import { ISlackChannel } from '../ChannelSelect/ChannelSelect.d';
 // other stuff
 import { useStores } from '../../stores/'
 
@@ -25,11 +24,6 @@ export const App = observer(() => {
   const { localStore, slackChannelsStore } = useStores();
   const localStorageSlackToken = localStore.getSlackToken();
   const [slackToken, setSlackToken] = useState(localStorageSlackToken || '');
-  const [channels, setChannels] = useState<undefined | ISlackChannel[]>(undefined);
-  const [selectedChannels, selectChannels] = useState<ISlackChannel[]>([]);
-  const onItemSelect = (channel: ISlackChannel) => {
-    selectChannels([channel]);
-  }
   return (
     <div className="App" style={{ position: 'relative', maxHeight: 500 }}>
       <header className="App-header">
@@ -54,19 +48,15 @@ export const App = observer(() => {
         <Button
           onClick={() => slackChannelsStore.fetchChannels()}
           intent="success"
-          text="button content"
+          text="Fetch Channels"
         />
         {slackChannelsStore.status === 'done' ? (
-          <ChannelSelect
-            selectedChannels={selectedChannels}
-            channels={slackChannelsStore.channels}
-            onItemSelect={onItemSelect}
-          />
+          <ChannelSelect />
         ) : <></>}
-        {selectedChannels.length > 0 ? (
+        {slackChannelsStore.selectedChannels.length > 0 ? (
           <Card interactive={true} elevation={Elevation.TWO}>
             <p>
-              {selectedChannels.toString()}
+              {slackChannelsStore.selectedChannels.toString()}
             </p>
           </Card>
         ) : (<></>)}

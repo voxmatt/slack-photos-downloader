@@ -64,16 +64,17 @@ export class SlackChannelsStore {
 
   // ACTIONS
   @action
-  addSelectedChannel(channel: ISlackChannel) {
+  addSelectedChannel = (channel: ISlackChannel) => {
     const isDupe = this.isSelectedChannel(channel);
     if (!isDupe) {
       this.selectedChannels.push(channel);
+      this.selectedChannels = this.sortChannels([...this.selectedChannels]);
     }
   }
 
   // ACTIONS
   @action
-  removeSelectedChannel(id: string) {
+  removeSelectedChannel = (id: string) => {
     const indexToRemove = this.selectedChannels.findIndex(c => c.id === id);
     if (indexToRemove > -1) {
       this.selectedChannels.splice(indexToRemove, 1);
@@ -101,14 +102,14 @@ export class SlackChannelsStore {
   }
 
   // CLASS HELPERS
-  isSelectedChannel(channel: ISlackChannel) {
+  isSelectedChannel = (channel: ISlackChannel) => {
     const dupe = this.selectedChannels.find((selectedChannel) => {
       return selectedChannel.id === channel.id;
     });
     return !!dupe;
   }
 
-  sortChannels(channels: ISlackChannel[]) {
+  sortChannels = (channels: ISlackChannel[]) => {
     return channels.sort((a, b) => {
       return (b.num_members | 0) - (a.num_members | 0);
     });

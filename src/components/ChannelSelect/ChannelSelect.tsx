@@ -1,11 +1,17 @@
+//////////////////////
+// IMPORTS
+/////////////////////
 // libraries
 import React from 'react';
+import { observer } from 'mobx-react'
 import { MenuItem } from "@blueprintjs/core";
 import { MultiSelect, ItemRenderer } from "@blueprintjs/select";
 // component
-import { ISlackChannel } from './ChannelSelect.d';
 import './ChannelSelect.css';
+import { ISlackChannel } from './ChannelSelect.d';
 import { highlightText, filterFilm } from './ChannelSelectHelpers';
+// state
+import { useStores } from '../../stores/'
 
 // Select<T> is a generic component to work with your data types.
 // In TypeScript, you must first obtain a non-generic reference:
@@ -28,15 +34,13 @@ const renderChannel: ItemRenderer<ISlackChannel> = (channel, { handleClick, modi
   );
 };
 
-export function ChannelSelect({ channels, onItemSelect, selectedChannels }: {
-  channels: ISlackChannel[],
-  selectedChannels: ISlackChannel[],
-  onItemSelect: (item: ISlackChannel) => void,
-}) {
+export const ChannelSelect = observer(() => {
+  const { slackChannelsStore } = useStores();
+  const { channels, addSelectedChannel } = slackChannelsStore;
   return (
     <ChannelSuggest
       items={channels}
-      onItemSelect={onItemSelect}
+      onItemSelect={addSelectedChannel}
       itemRenderer={renderChannel}
       tagRenderer={(item) => item.name}
       itemPredicate={filterFilm}
@@ -46,4 +50,4 @@ export function ChannelSelect({ channels, onItemSelect, selectedChannels }: {
       }}
     />
   );
-} 
+});
