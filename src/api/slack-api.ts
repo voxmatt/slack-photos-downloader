@@ -101,6 +101,7 @@ const getSlackClient = () => {
   return new WebClient(slackToken);
 }
 
+// pulled this out so the below can optionally fetch from a single or multiple channels
 async function baseFetchFiles(options?: FilesListArguments) {
   const result = await getSlackClient().files.list(options);
   if (!result.ok) {

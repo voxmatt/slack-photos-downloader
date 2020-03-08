@@ -50,12 +50,16 @@ export const SetupDialog = observer(() => {
             onChange={(e: any) => setupDialogStore.setSlackToken(e.target.value)}
           />
         </FormGroup>
-        <div className={Classes.DIALOG_FOOTER}>
-          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button onClick={() => setupDialogStore.closeDialog()}>
-              Done
-            </Button>
-          </div>
+      </div>
+      <div className={Classes.DIALOG_FOOTER}>
+        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+          <Button
+            intent={Intent.SUCCESS}
+            onClick={() => setupDialogStore.closeDialog()}
+            loading={setupDialogStore.isLoading}
+          >
+            Done
+          </Button>
         </div>
       </div>
     </Dialog>

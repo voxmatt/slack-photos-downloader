@@ -1,0 +1,9 @@
+@import "~@blueprintjs/core/lib/scss/variables";
+.channel-suggest-popover {
+  max-height: 200px;
+  overflow: scroll;
+}
+
+.App_content {
+  padding: $pt-grid-size;
+}
