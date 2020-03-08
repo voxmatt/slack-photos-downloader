@@ -4,7 +4,7 @@
 // libraries
 import React from 'react';
 import { observer } from 'mobx-react'
-import { Button, MenuItem } from "@blueprintjs/core";
+import { Button, MenuItem, FormGroup } from "@blueprintjs/core";
 import { MultiSelect, ItemRenderer } from "@blueprintjs/select";
 // component
 import './ChannelSelect.css';
@@ -57,25 +57,31 @@ export const ChannelSelect = observer(() => {
 
   // render!
   return (
-    <ChannelSuggest
-      items={channels}
-      onItemSelect={addOrRemoveSelectedChannel}
-      itemRenderer={renderChannel}
-      tagRenderer={(item) => item.name}
-      itemPredicate={filterChannel}
-      selectedItems={selectedChannels}
-      resetOnSelect={true}
-      fill={true}
-      tagInputProps={{
-        onRemove: (_val, index) => {
-          removeSelectedChannelByIndex(index);
-        },
-        rightElement: clearButton
-      }}
-      popoverProps={{
-        popoverClassName: 'channel-suggest-popover',
-        minimal: true,
-      }}
-    />
+    <FormGroup
+      label="Channels"
+      helperText="Find photos in selected channels"
+      labelFor="suggest-input"
+    >
+      <ChannelSuggest
+        items={channels}
+        onItemSelect={addOrRemoveSelectedChannel}
+        itemRenderer={renderChannel}
+        tagRenderer={(item) => item.name}
+        itemPredicate={filterChannel}
+        selectedItems={selectedChannels}
+        resetOnSelect={true}
+        fill={true}
+        tagInputProps={{
+          onRemove: (_val, index) => {
+            removeSelectedChannelByIndex(index);
+          },
+          rightElement: clearButton
+        }}
+        popoverProps={{
+          popoverClassName: 'channel-suggest-popover',
+          minimal: true,
+        }}
+      />
+    </FormGroup>
   );
 });
