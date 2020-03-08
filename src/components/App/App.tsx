@@ -16,13 +16,23 @@ import './App.css';
 import { ChannelSelect } from '../ChannelSelect/ChannelSelect';
 // other stuff
 import { useStores } from '../../stores/'
-import { fetchSlackFiles } from '../../api/slack-api';
+import { ISlackFile } from '../../api/slack-api';
 
 //////////////////////
 // COMPONENT
 /////////////////////
+const SlackPhotos = ({ photos }: { photos: ISlackFile[] }) => {
+  return (
+    <div>
+      {photos.map((photo) => (
+        <img src={photo.thumb_360} />
+      ))}
+    </div>
+  );
+}
+
 export const App = observer(() => {
-  const { localStore, slackChannelsStore } = useStores();
+  const { localStore, slackChannelsStore, slackPhotosStore } = useStores();
   const localStorageSlackToken = localStore.getSlackToken();
   const [slackToken, setSlackToken] = useState(localStorageSlackToken || '');
   return (
@@ -55,10 +65,13 @@ export const App = observer(() => {
           <ChannelSelect />
         ) : <></>}
         <Button
-          onClick={() => fetchSlackFiles()}
+          onClick={() => slackPhotosStore.fetchPhotos()}
           intent="success"
           text="Fetch Files"
         />
+        {slackPhotosStore.status === 'done' ? (
+          <SlackPhotos photos={slackPhotosStore.photos} />
+        ) : (<></>)}
       </header>
     </div>
   );
