@@ -17,6 +17,7 @@ import { ChannelSelect } from '../ChannelSelect/ChannelSelect';
 // other stuff
 import { useStores } from '../../stores/'
 import { ISlackFile } from '../../api/slack-api';
+import { SlackChannelsStore } from '../../stores/slack-channels-store';
 
 //////////////////////
 // COMPONENT
@@ -25,7 +26,7 @@ const SlackPhotos = ({ photos }: { photos: ISlackFile[] }) => {
   return (
     <div>
       {photos.map((photo) => (
-        <img src={photo.thumb_360} />
+        <img key={photo.id} alt={photo.name} src={photo.thumb_360} />
       ))}
     </div>
   );
@@ -65,7 +66,7 @@ export const App = observer(() => {
           <ChannelSelect />
         ) : <></>}
         <Button
-          onClick={() => slackPhotosStore.fetchPhotos()}
+          onClick={() => slackPhotosStore.fetchPhotos(slackChannelsStore.selectedChannels.map(sc => sc.id))}
           intent="success"
           text="Fetch Files"
         />

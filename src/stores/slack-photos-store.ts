@@ -24,11 +24,11 @@ export class SlackPhotosStore {
   public photos: ISlackFile[] = [];
 
   @action
-  async fetchPhotos() {
+  async fetchPhotos(channelIds: string[]) {
     this.photos = [];
     this.status = 'pending';
     try {
-      const files = await fetchSlackFiles();
+      const files = await fetchSlackFiles(channelIds);
       // after await, modifying state again, needs an actions:
       runInAction(() => {
         this.status = "done";

@@ -86,6 +86,7 @@ export interface ISlackFile {
 function filterChannels(channels: ISlackChannel[]) {
   return channels.filter((channel) => {
     return !!channel.is_channel
+      && !channel.is_private
       && channel.members.length > 0
       && !channel.is_archived;
   });
@@ -119,20 +120,28 @@ export async function fetchSlackChannels() {
   return filterChannels(result.channels as ISlackChannel[]);
 }
 
-export async function fetchSlackFiles() {
-  // const now = Date.now();
-  // const millisInAWeek = 604800000;
-  const result = await getSlackClient().files.list({
-    types: 'images',
-  });
+export async function fetchSlackFiles(channels: string[]) {
+  const now = Date.now();
+  const millisInAWeek = 604800000;
+  let files: ISlackFile[] = [];
 
-  if (!result.ok) {
-    throw new Error('Slack request errored');
+  for (let index = 0; index < channels.length; index++) {
+    const channelToFetch = channels[index];
+    const result = await getSlackClient().files.list({
+      types: 'images',
+      channel: channelToFetch,
+      ts_from: `${(now - millisInAWeek) / 1000}`,
+      ts_to: `${now / 1000}`,
+    });
+    if (!result.ok) {
+      throw new Error('Slack request errored');
+    }
+
+    if (!result.files) {
+      throw new Error('Slack files not returned');
+    }
+    files = [...files, ...(result.files as ISlackFile[])];
   }
 
-  if (!result.files) {
-    throw new Error('Slack files not returned');
-  }
-
-  return result.files as ISlackFile[];
+  return files;
 }
