@@ -134,15 +134,17 @@ export async function fetchSlackChannels() {
   return filterChannels(result.channels as ISlackChannel[]);
 }
 
-export async function fetchSlackFiles(channels?: string[]) {
-  const now = Date.now();
-  const millisInAWeek = 604800000;
+export async function fetchSlackFiles(
+  startDate: Date,
+  endDate: Date,
+  channels?: string[],
+) {
   let files: ISlackFile[] = [];
 
   let options: FilesListArguments = {
     types: 'images',
-    ts_from: `${(now - millisInAWeek) / 1000}`,
-    ts_to: `${now / 1000}`,
+    ts_from: `${startDate.valueOf() / 1000}`,
+    ts_to: `${endDate.valueOf() / 1000}`,
   };
 
   // if not passing channel ids, just fetch all of them

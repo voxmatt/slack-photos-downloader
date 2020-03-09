@@ -7,22 +7,33 @@ import { observer } from 'mobx-react'
 import {
   Classes,
 } from "@blueprintjs/core";
-import { DateRangePicker } from "@blueprintjs/datetime";
+import { DateRangeInput } from "@blueprintjs/datetime";
 // other stuff
-import { useStores } from '../../stores/'
+import { useStores } from '../../stores'
+
+//////////////////////
+// HELPERS
+/////////////////////
+function dateFormatter(date: Date) {
+  const month = date.getMonth() + 1; // stupid zero indexed dates
+  return `${month}/${date.getDate()}/${date.getFullYear()}`;
+}
 
 //////////////////////
 // COMPONENT
 /////////////////////
 export const DateRangeSelect = observer(() => {
   const { slackPhotosStore } = useStores();
-
-  return (<DateRangePicker
+  return (<DateRangeInput
+    shortcuts
     allowSingleDayRange
     singleMonthOnly
-    shortcuts
-    className={Classes.ELEVATION_1}
-    maxDate={new Date()}
-    onChange={console.log}
-  />);
+    formatDate={dateFormatter}
+    onChange={slackPhotosStore.setDates}
+    parseDate={str => new Date(str)}
+    value={[
+      slackPhotosStore.startDate,
+      slackPhotosStore.endDate,
+    ]}
+  />)
 });
