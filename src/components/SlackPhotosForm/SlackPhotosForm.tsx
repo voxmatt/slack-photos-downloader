@@ -23,13 +23,15 @@ import { ISlackFile } from '../../api/slack-api';
 // COMPONENT
 /////////////////////
 const SlackPhotos = ({ photos }: { photos: ISlackFile[] }) => {
-  return (
-    <div>
-      {photos.map((photo) => (
-        <img key={photo.id} alt={photo.name} src={photo.thumb_360} />
-      ))}
-    </div>
-  );
+  return (<>
+    {photos.map((photo) => {
+      const file = new Blob([photo.url_private as any], { type: photo.filetype });
+      const href = URL.createObjectURL(file);
+      return (<a key={photo.id} href={href} download={photo.name}>
+        <img alt={photo.name} src={photo.thumb_64} />
+      </a>);
+    })}
+  </>);
 }
 
 export const SlackPhotosForm = observer(() => {
@@ -37,7 +39,7 @@ export const SlackPhotosForm = observer(() => {
   useEffect(() => {
     // note: I'm not handling errors here...
     slackChannelsStore.fetchChannels()
-  }, []); // this will only run once due to empty array
+  }, [slackChannelsStore]); // this will only run once due to empty array
 
   return (<div>
     <Card elevation={Elevation.TWO}>
