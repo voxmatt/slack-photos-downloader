@@ -3,14 +3,9 @@
 /////////////////////
 // libraries
 import { observable, action, configure, runInAction } from 'mobx';
-import { fetchSlackFiles, ISlackFile } from '../api/slack-api';
+import { fetchSlackFiles, ISlackFile, TAsyncStatus } from '../api/slack-api';
 // config
 configure({ enforceActions: "always" });
-
-//////////////////////
-// TYPES
-/////////////////////
-type TSlackChannelsStatus = 'idle' | 'pending' | 'done' | 'error';
 
 //////////////////////∏
 // STORE
@@ -20,7 +15,7 @@ export class SlackPhotosStore {
 
   // OBSERVABLES
   @observable
-  public status: TSlackChannelsStatus = 'idle';
+  public status: TAsyncStatus = 'idle';
 
   @observable
   public photos: ISlackFile[] = [];
@@ -45,7 +40,7 @@ export class SlackPhotosStore {
   @action
   async fetchPhotos(channelIds: string[]) {
     this.photos = [];
-    this.status = 'pending';
+    this.status = 'loading';
     try {
       const files = await fetchSlackFiles(this.startDate, this.endDate, channelIds);
       // after await, modifying state again, needs an actions:

@@ -4,6 +4,7 @@
 // libraries
 import React from 'react';
 import { observer } from 'mobx-react'
+import { FormGroup } from '@blueprintjs/core';
 import { DateRangeInput } from "@blueprintjs/datetime";
 // other stuff
 import { useStores } from '../../stores'
@@ -21,16 +22,23 @@ function dateFormatter(date: Date) {
 /////////////////////
 export const DateRangeSelect = observer(() => {
   const { slackPhotosStore } = useStores();
-  return (<DateRangeInput
-    shortcuts
-    allowSingleDayRange
-    singleMonthOnly
-    formatDate={dateFormatter}
-    onChange={slackPhotosStore.setDates}
-    parseDate={str => new Date(str)}
-    value={[
-      slackPhotosStore.startDate,
-      slackPhotosStore.endDate,
-    ]}
-  />)
+  return (<FormGroup
+    label="Date Range"
+    labelFor="text-input"
+    labelInfo="(required)"
+    helperText="Search for photos uploaded within this date range"
+  >
+    <DateRangeInput
+      shortcuts
+      allowSingleDayRange
+      singleMonthOnly
+      formatDate={dateFormatter}
+      onChange={slackPhotosStore.setDates}
+      parseDate={str => new Date(str)}
+      value={[
+        slackPhotosStore.startDate,
+        slackPhotosStore.endDate,
+      ]}
+    />
+  </FormGroup>)
 });

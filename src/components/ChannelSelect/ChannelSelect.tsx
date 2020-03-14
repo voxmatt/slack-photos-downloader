@@ -59,7 +59,7 @@ export const ChannelSelect = observer(() => {
   return (
     <FormGroup
       label="Channels"
-      helperText="Find photos in selected channels"
+      helperText="Search for photos in selected channels"
       labelFor="suggest-input"
     >
       <ChannelSuggest

@@ -9,6 +9,8 @@ import { SetupDialogStore } from '../stores/setup-dialog-store';
 //////////////////////
 // TYPES
 /////////////////////
+export type TAsyncStatus = 'idle' | 'loading' | 'done' | 'error';
+
 export interface ISlackChannel {
   id: string;
   name: string;

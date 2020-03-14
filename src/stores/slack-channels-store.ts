@@ -3,14 +3,9 @@
 /////////////////////
 // libraries
 import { observable, action, configure, runInAction } from 'mobx';
-import { fetchSlackChannels, ISlackChannel } from '../api/slack-api';
+import { fetchSlackChannels, ISlackChannel, TAsyncStatus } from '../api/slack-api';
 // config
 configure({ enforceActions: "always" });
-
-//////////////////////
-// TYPES
-/////////////////////
-type TSlackChannelsStatus = 'pending' | 'done' | 'error';
 
 //////////////////////
 // STORE
@@ -18,7 +13,7 @@ type TSlackChannelsStatus = 'pending' | 'done' | 'error';
 export class SlackChannelsStore {
   // OBSERVABLES
   @observable
-  public status: TSlackChannelsStatus = 'pending';
+  public status: TAsyncStatus = 'idle';
 
   @observable
   public channels: ISlackChannel[] = [];
@@ -67,7 +62,7 @@ export class SlackChannelsStore {
   @action
   async fetchChannels() {
     this.channels = [];
-    this.status = 'pending';
+    this.status = 'loading';
     try {
       const channels = await fetchSlackChannels();
       // after await, modifying state again, needs an actions:

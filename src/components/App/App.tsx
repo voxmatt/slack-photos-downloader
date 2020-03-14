@@ -10,7 +10,8 @@ import './App.scss';
 import { Nav } from '../Nav/Nav';
 import { SetupDialog } from '../SetupDialog/SetupDialog';
 import { SetupNeededView } from '../SetupNeededView/SetupNeededView';
-import { SlackPhotosForm } from '../SlackPhotosForm/SlackPhotosForm';
+import { FetchOptions } from '../FetchOptions/FetchOptions';
+import { FetchedPhotos } from '../FetchedPhotos/FetchedPhotos';
 // other stuff
 import { useStores } from '../../stores/'
 
@@ -24,10 +25,11 @@ export const App = observer(() => {
       <Nav />
       <div className="App_content">
         {setupDialogStore.slackTokenIsValid ? (
-          <SlackPhotosForm />
+          <FetchOptions />
         ) : (
             <SetupNeededView />
           )}
+        <FetchedPhotos />
       </div>
       <SetupDialog />
     </div>
