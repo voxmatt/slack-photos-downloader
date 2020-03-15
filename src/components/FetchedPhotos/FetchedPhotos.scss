@@ -2,3 +2,10 @@
 .FetchedPhotos_card {
   margin-top: $pt-grid-size;
 }
+
+.FetchedPhotos_listContainer {
+  display: flex;
+  flex-flow: row wrap;
+  overflow: hidden;
+  margin-right: -8px;
+}

@@ -1,0 +1,68 @@
+@import "~@blueprintjs/core/lib/scss/variables";
+
+// This is complex...
+.FetchedPhoto_container {
+  // CONTAINER
+  flex: auto;
+  margin: 0 10px 10px 0;
+  transition: height .4s, width .4s, margin-top .4s, margin-bottom .4s;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-size: cover;
+  overflow: hidden;
+  position: relative;
+
+  // The expanded view is pretty straight forward
+  // the width is just set to 100% to make it large
+  &.expanded {
+    width: 100%;
+    height: unset;
+  }
+
+  // The thumbnail view is more complex
+  // the size is small, obviously
+  // but there's also a bunch of stuff happening on hover
+  &.thumbnail {
+    width: 100px;
+    height: 100px;
+
+    // controls are hidden until hovered
+    .controls {
+      bottom: -40px;
+    }
+
+    // and the height expands to give an affordance
+    &:hover {
+      height: 114px;
+      margin-top: -7px;
+      margin-bottom: -7px;
+
+      .controls {
+        bottom: 0;
+      }
+    }
+  }
+
+  // CONTROLS
+  .controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: bottom .4s;
+    padding: 4px;
+    display: flex;
+  
+    .bp3-menu {
+      min-width: unset;
+      display: flex;
+      padding-inline-start: 0;
+      padding: 0;
+      box-shadow: 0 0px 4px 0px rgba(0,0,0,.3);
+    }
+  
+    .bp3-menu-item {
+      padding: 5px 1px 6px 8px;
+    }
+  }
+}
