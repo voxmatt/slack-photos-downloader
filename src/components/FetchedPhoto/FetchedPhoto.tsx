@@ -3,49 +3,40 @@
 /////////////////////
 // libraries
 import React, { useState } from 'react';
+import { observer } from 'mobx-react';
 import { Menu, MenuItem } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 // component
 import "./FetchedPhoto.scss";
 // other stuff
 import { ISlackFile } from '../../api/slack-api';
+import { useStores } from '../../stores/';
 
 //////////////////////
 // COMPONENT
 /////////////////////
-export const FetchedPhoto = ({ photo }: { photo: ISlackFile }) => {
-  const [expanded, setExpanded] = useState(false);
+export const FetchedPhoto = observer(({ photo }: { photo: ISlackFile }) => {
+  const { slackPhotosStore } = useStores();
+  // in thumbnail mode by default
+  const [isThumbnail, setIsThumbnail] = useState(true);
 
-  const containerClassName = expanded
-    ? 'FetchedPhoto_container expanded'
-    : 'FetchedPhoto_container thumbnail'
+  // is there a better way to construct these?
+  const containerClassName = `FetchedPhoto_container ${isThumbnail ? 'thumbnail' : ''}`
 
   return (<div className={containerClassName}>
-    <img width={expanded ? `100%` : `110%`}
+    <img
       alt={photo.name}
-      src={expanded ? photo.url_private : photo.thumb_160}
+      src={isThumbnail ? photo.thumb_160 : photo.url_private}
     />
     <div className="controls" >
       <Menu>
         <MenuItem
-          icon={expanded ? IconNames.MINIMIZE : IconNames.MAXIMIZE}
-          onClick={() => setExpanded(!expanded)}
+          icon={isThumbnail ? IconNames.MAXIMIZE : IconNames.MINIMIZE}
+          onClick={() => setIsThumbnail(!isThumbnail)}
         />
-        <MenuItem icon={IconNames.DELETE} />
-        <MenuItem icon={IconNames.DOWNLOAD} />
+        <MenuItem icon={IconNames.DELETE} onClick={() => slackPhotosStore.removePhoto(photo.id)} />
+        <MenuItem icon={IconNames.DOWNLOAD} href={photo.url_private_download} />
       </Menu>
     </div>
   </div>)
-}
-
-const SlackPhotos = ({ photos }: { photos: ISlackFile[] }) => {
-  return (<>
-    {photos.map((photo) => {
-      const file = new Blob([photo.url_private as any], { type: photo.filetype });
-      const href = URL.createObjectURL(file);
-      return (<a key={photo.id} href={href} download={photo.name}>
-        <img alt={photo.name} src={photo.thumb_64} />
-      </a>);
-    })}
-  </>);
-}
+})

@@ -5,18 +5,18 @@
   // CONTAINER
   flex: auto;
   margin: 0 10px 10px 0;
-  transition: height .2s, margin-top .2s, margin-bottom .2s;
+  transition: height .2s, width .2s, margin-top .2s, margin-bottom .2s;
   border-radius: 6px;
   border: 1px solid #ccc;
-  background-size: cover;
   overflow: hidden;
   position: relative;
+  // expanded
+  width: 100%;
+  height: unset;
 
-  // The expanded view is pretty straight forward
-  // the width is just set to 100% to make it large
-  &.expanded {
+  img {
+    display: block;
     width: 100%;
-    height: unset;
   }
 
   // The thumbnail view is more complex
@@ -25,6 +25,11 @@
   &.thumbnail {
     width: 100px;
     height: 100px;
+
+    // image is slightly wider to allow for height on hover
+    img {
+      width: 110%;
+    }
 
     // controls are hidden until hovered
     .controls {

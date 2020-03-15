@@ -55,4 +55,18 @@ export class SlackPhotosStore {
       });
     }
   }
+
+  // ACTIONS
+  @action
+  removePhoto = (photoId: string) => {
+    const indexToRemove = this.photos.findIndex(p => p.id === photoId);
+    this.removePhotoByIndex(indexToRemove);
+  }
+
+  @action
+  removePhotoByIndex = (index: number) => {
+    if (index > -1) {
+      this.photos.splice(index, 1);
+    }
+  }
 }
