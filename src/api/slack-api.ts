@@ -104,16 +104,32 @@ const getSlackClient = () => {
 }
 
 // pulled this out so the below can optionally fetch from a single or multiple channels
-async function baseFetchFiles(options?: FilesListArguments) {
-  const result = await getSlackClient().files.list(options);
-  if (!result.ok) {
-    throw new Error('Slack request errored');
+async function baseFetchFiles(passedOptions?: FilesListArguments, getAllPages?: boolean) {
+  let pagesToFetch = 1;
+  let files: ISlackFile[] = []
+
+  // if getAllPages isn't set, this just iterates once
+  for (let page = 1; page <= pagesToFetch; page++) {
+    const options = getAllPages ? { ...passedOptions, page } : passedOptions;
+    const result = await getSlackClient().files.list(options);
+
+    if (!result.ok) {
+      throw new Error('Slack request errored');
+    }
+
+    if (!result.files) {
+      throw new Error('Slack files not returned');
+    }
+
+    if (getAllPages) {
+      pagesToFetch = (result.paging as any).pages; // this on the files response
+    }
+
+    const fetchedFiles = result.files as ISlackFile[];
+    files = [...files, ...fetchedFiles];
   }
 
-  if (!result.files) {
-    throw new Error('Slack files not returned');
-  }
-  return result.files as ISlackFile[];
+  return files;
 }
 
 //////////////////////
@@ -139,6 +155,7 @@ export async function fetchSlackChannels() {
 export async function fetchSlackFiles(
   startDate: Date,
   endDate: Date,
+  getAllPages?: boolean,
   channels?: string[],
 ) {
   let files: ISlackFile[] = [];
@@ -151,7 +168,7 @@ export async function fetchSlackFiles(
 
   // if not passing channel ids, just fetch all of them
   if (!channels || channels.length === 0) {
-    files = await baseFetchFiles(options);
+    files = await baseFetchFiles(options, getAllPages);
     return files;
   }
 
@@ -159,7 +176,7 @@ export async function fetchSlackFiles(
   for (let index = 0; index < channels.length; index++) {
     const channelToFetch = channels[index];
     options.channel = channelToFetch;
-    const fetchedFiles = await baseFetchFiles(options);
+    const fetchedFiles = await baseFetchFiles(options, getAllPages);
     files = [...files, ...fetchedFiles];
   }
 

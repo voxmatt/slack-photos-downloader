@@ -38,11 +38,11 @@ export class SlackPhotosStore {
   }
 
   @action
-  async fetchPhotos(channelIds: string[]) {
+  async fetchPhotos(getAllPages?: boolean, channelIds?: string[]) {
     this.photos = [];
     this.status = 'loading';
     try {
-      const files = await fetchSlackFiles(this.startDate, this.endDate, channelIds);
+      const files = await fetchSlackFiles(this.startDate, this.endDate, getAllPages, channelIds);
       // after await, modifying state again, needs an actions:
       runInAction(() => {
         this.status = "done";

@@ -36,7 +36,7 @@ export const FetchOptions = observer(() => {
       <ChannelSelect />
     </div>
     <Button
-      onClick={() => slackPhotosStore.fetchPhotos(slackChannelsStore.selectedChannels.map(sc => sc.id))}
+      onClick={() => slackPhotosStore.fetchPhotos(true, slackChannelsStore.selectedChannels.map(sc => sc.id))}
       loading={slackPhotosStore.status === 'loading'}
       intent="success"
       text="Find Photos"
