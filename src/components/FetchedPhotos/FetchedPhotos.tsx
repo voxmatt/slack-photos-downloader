@@ -35,6 +35,8 @@ async function downloadAll(photos: ISlackFile[], slackAuthToken: string) {
     }
   };
 
+  let namesRecord: { [key: string]: number } = {};
+
   for (let index = 0; index < photos.length; index++) {
     const photo = photos[index];
 
@@ -42,12 +44,25 @@ async function downloadAll(photos: ISlackFile[], slackAuthToken: string) {
       console.log(`could not download photo "${photos[index].name}`);
       return;
     }
-    const response = await fetch(photo.url_private, fetchOptions);
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const response = await fetch(proxyUrl + photo.url_private, fetchOptions);
     const blob = await response.blob();
-    zip.file(photo.name || `slack_photo_${index}`, blob, { binary: true });
+
+    // these can have dupe names and then jsZip overwrites
+    let photoName = photo.name || `image.${photo.filetype}`;
+    const nameCount = namesRecord[photoName] || 0;
+    namesRecord[photoName] = nameCount + 1;
+
+    if (nameCount > 0) {
+      const nameParts = photoName.split('.');
+      nameParts.splice(nameParts.length - 1, 0, `${nameCount}`);
+      photoName = nameParts.join('.');
+    }
+    const date = photo.created ? new Date(photo.created * 1000) : new Date();
+    zip.file(photoName as string, blob, { binary: true, date });
   }
   zip.generateAsync({ type: 'blob' }).then((zipContent) => {
-    saveAs('slack_downloads.zip');
+    saveAs(zipContent, 'slack_downloads.zip');
   });
 }
 
