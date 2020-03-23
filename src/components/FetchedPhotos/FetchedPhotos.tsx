@@ -20,7 +20,6 @@ import { FetchedPhoto } from '../FetchedPhoto/FetchedPhoto';
 import { useStores } from '../../stores/'
 import { ISlackFile } from '../../api/slack-api';
 
-const slackAuthToken = 'xoxp-88887328098-89756741844-496299900263-39b59498e0006332895dffd837c78403';
 //////////////////////
 // COMPONENT
 /////////////////////
@@ -44,7 +43,7 @@ async function downloadAll(photos: ISlackFile[], slackAuthToken: string) {
       console.log(`could not download photo "${photos[index].name}`);
       return;
     }
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const proxyUrl = 'http://localhost:3121/';
     const response = await fetch(proxyUrl + photo.url_private, fetchOptions);
     const blob = await response.blob();
 
@@ -67,8 +66,9 @@ async function downloadAll(photos: ISlackFile[], slackAuthToken: string) {
 }
 
 export const FetchedPhotos = observer(() => {
-  const { slackPhotosStore } = useStores();
-  if (slackPhotosStore.status === 'idle' || slackPhotosStore.status === 'loading') {
+  const { slackPhotosStore, setupDialogStore } = useStores();
+  const { slackToken } = setupDialogStore;
+  if (slackPhotosStore.status === 'idle' || slackPhotosStore.status === 'loading' || !slackToken) {
     return (<></>)
   }
 
@@ -76,7 +76,7 @@ export const FetchedPhotos = observer(() => {
     <H4>
       Results
     </H4>
-    <Button onClick={() => downloadAll(slackPhotosStore.photos, slackAuthToken)}>Download All</Button>
+    <Button onClick={() => downloadAll(slackPhotosStore.photos, slackToken)}>Download All</Button>
     <div className="FetchedPhotos_listContainer">
       {slackPhotosStore.photos.map((photo) => <FetchedPhoto key={photo.id} photo={photo} />)}
     </div>

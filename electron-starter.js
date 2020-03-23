@@ -2,14 +2,33 @@
 const { app, BrowserWindow } = require("electron");
 const url = require("url");
 const path = require("path");
+const cors_proxy = require('cors-anywhere');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
+function startCorsProxy() {
+  // Listen on a specific host via the HOST environment variable
+  var host = 'localhost';
+  // Listen on a specific port via the PORT environment variable
+  var port = 3121;
+
+  cors_proxy.createServer({
+    originWhitelist: [], // Allow all origins
+    requireHeader: ['origin', 'x-requested-with'],
+    removeHeaders: ['cookie', 'cookie2']
+  }).listen(port, host, function () {
+    console.log('Running CORS Anywhere on ' + host + ':' + port);
+  });
+}
+
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 425, height: 400 });
+
+  // launch cors proxy
+  startCorsProxy();
 
   // and load the index.html of the app.
   const startUrl =
