@@ -56,6 +56,6 @@
     "cross-env": "^7.0.0",
     "electron": "^8.0.1",
     "foreman": "^3.0.1",
-    "node-sass": "^4.13.1"
+    "node-sass": "^7.0.0"
   }
 }
