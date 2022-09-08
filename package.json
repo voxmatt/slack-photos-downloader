@@ -16,7 +16,7 @@
     "@types/react-dom": "^16.9.0",
     "cors-anywhere": "^0.4.1",
     "file-saver": "^2.0.2",
-    "jszip": "^3.2.2",
+    "jszip": "^3.7.0",
     "jszip-utils": "^0.1.0",
     "mobx": "^5.15.4",
     "mobx-react": "^6.1.8",
